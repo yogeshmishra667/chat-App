@@ -1,5 +1,6 @@
 const path = require('path');
 const express = require('express');
+const Filter = require('bad-words');
 const app = express();
 //socket.io setup
 const http = require('http').createServer(app);
@@ -20,15 +21,32 @@ io.on('connection', (socket) => {
   socket.broadcast.emit('message', 'new user joined 🔥 ');
   // send a message to everyone except for a certain emitting socket
 
-  socket.on('sendMessage', (message) => {
+  socket.on('sendMessage', (message, callback) => {
+    const filter = new Filter(); // for bad words
+    if (filter.isProfane(message)) {
+      return callback('profanity is not allowed');
+    }
     io.emit('message', message); //send every single connected client
+    callback();
   });
 
   //when user disconnected
   socket.on('disconnect', () => {
     io.emit('message', 'user disconnected 😞');
   });
+
+  socket.on('sendLocation', (coords, callback) => {
+    io.emit(
+      'message',
+      `https://google.com/maps?q=${coords.latitude},${coords.longitude}`
+    );
+    callback();
+  });
 });
+
+//acknowledgement blueprint;
+//server (emit) -> client (receive) --acknowledgement --> server
+//client (emit) -> server (receive) --acknowledgement --> client
 
 //run server
 const PORT = process.env.PORT || 3000;
