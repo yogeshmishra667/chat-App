@@ -5,9 +5,21 @@ const $messageForm = document.querySelector('#message-form');
 const $messageFormInput = $messageForm.querySelector('input');
 const $messageFormButton = $messageForm.querySelector('button');
 const $sendLocation = document.querySelector('#send-location');
+const $messages = document.querySelector('#messages'); //for render messages
+
+// Templates
+const messageTemplate = document.querySelector('#message-template').innerHTML;
 
 socket.on('message', (message) => {
   console.log(message);
+
+  //render message on web pages
+  const html = Mustache.render(messageTemplate, {
+    message,
+  });
+  $messages.insertAdjacentHTML('beforeend', html);
+  // insertAdjacentHTML allow to insert other html Adjacent to selected elements
+  // beforeend show messages after div that mean old messages show first like whtsApp
 });
 
 $messageForm.addEventListener('submit', (e) => {
