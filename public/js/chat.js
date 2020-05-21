@@ -16,7 +16,8 @@ socket.on('message', (message) => {
 
   //render message on web pages
   const html = Mustache.render(messageTemplate, {
-    message,
+    message: message.text,
+    createdAt: moment(message.createdAt).format('h:mm a'),
   });
   $messages.insertAdjacentHTML('beforeend', html);
   // insertAdjacentHTML allow to insert other html Adjacent to selected elements
@@ -48,7 +49,8 @@ socket.on('locationMessage', (url) => {
   console.log(url);
   //render location msg on web pages
   const html = Mustache.render(locationTemplate, {
-    url,
+    url: url,
+    createdAt: moment(url.createdAt).format('h:mm a'),
   });
   $messages.insertAdjacentHTML('beforeend', html);
 });

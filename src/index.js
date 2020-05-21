@@ -2,6 +2,10 @@ const path = require('path');
 const express = require('express');
 const Filter = require('bad-words');
 const app = express();
+const {
+  generateMessage,
+  generateLocationMessage,
+} = require('../src/utils/message');
 //socket.io setup
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
@@ -17,8 +21,8 @@ app.use(express.static(publicPathDir));
 io.on('connection', (socket) => {
   console.log('a user connected');
   //emit use for transfer event data 👇
-  socket.emit('message', 'welcome!!');
-  socket.broadcast.emit('message', 'new user joined 🔥 ');
+  socket.emit('message', generateMessage('welcome!!'));
+  socket.broadcast.emit('message', generateMessage('new user joined 🔥 '));
   // send a message to everyone except for a certain emitting socket
 
   socket.on('sendMessage', (message, callback) => {
@@ -26,19 +30,21 @@ io.on('connection', (socket) => {
     if (filter.isProfane(message)) {
       return callback('profanity is not allowed');
     }
-    io.emit('message', message); //send every single connected client
+    io.emit('message', generateMessage(message)); //send every single connected client
     callback();
   });
 
   //when user disconnected
   socket.on('disconnect', () => {
-    io.emit('message', 'user disconnected 😞');
+    io.emit('message', generateMessage('user disconnected 😞'));
   });
 
   socket.on('sendLocation', (coords, callback) => {
     io.emit(
       'locationMessage',
-      `https://google.com/maps?q=${coords.latitude},${coords.longitude}`
+      generateLocationMessage(
+        `https://google.com/maps?q=${coords.latitude},${coords.longitude}`
+      )
     );
     callback();
   });

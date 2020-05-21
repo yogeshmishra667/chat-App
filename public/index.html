@@ -15,14 +15,14 @@
     <!-- for messages templates-->
     <script id="message-template" type="text/html">
       <div>
-          <p> {{message}} </p>
+          <p>{{createdAt}} - {{message}} </p>
       </div>
     </script>
 
     <!-- for location messages-->
     <script id="location-template" type="text/html">
       <div>
-          <a href='{{url}}' target='_blank' >current location</a>
+          <p>{{createdAt}} - <a href='{{url}}' target='_blank' > current location</a> </p>
       </div>
     </script>
 
