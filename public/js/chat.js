@@ -11,6 +11,14 @@ const $messages = document.querySelector('#messages'); //for render messages
 const messageTemplate = document.querySelector('#message-template').innerHTML;
 const locationTemplate = document.querySelector('#location-template').innerHTML;
 
+// options
+const { username, room } = Qs.parse(location.search, {
+  ignoreQueryPrefix: true,
+});
+// for rooms and username Qs --Query String user to extract query
+// location.search user for query body --"?username=yogi&room=hello"
+// ignoreQueryPrefix use for ignore ? on query-body
+
 socket.on('message', (message) => {
   console.log(message);
 
@@ -79,3 +87,6 @@ $sendLocation.addEventListener('click', () => {
     );
   });
 });
+
+// use for send { username, room } on server
+socket.emit('join', { username, room });

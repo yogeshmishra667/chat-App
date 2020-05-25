@@ -20,10 +20,19 @@ app.use(express.static(publicPathDir));
 
 io.on('connection', (socket) => {
   console.log('a user connected');
-  //emit use for transfer event data 👇
-  socket.emit('message', generateMessage('welcome!!'));
-  socket.broadcast.emit('message', generateMessage('new user joined 🔥 '));
-  // send a message to everyone except for a certain emitting socket
+
+  // for username and join rooms
+  socket.on('join', ({ username, room }) => {
+    socket.join(room); //use for join rooms
+    //emit use for transfer event data 👇
+    socket.emit('message', generateMessage('welcome to Yo-chats 😎'));
+    socket.broadcast
+      .to(room)
+      .emit('message', generateMessage(`${username} has joined 🔥`));
+    // send a message to everyone except for a certain emitting socket
+
+    // io.[to].emit ==> it's emit the event with everybody in specific rooms
+  });
 
   socket.on('sendMessage', (message, callback) => {
     const filter = new Filter(); // for bad words
